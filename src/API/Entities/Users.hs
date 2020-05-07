@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module API.Entities where
+module API.Entities.Users where
 
 import Data.Aeson
   ( FromJSON(parseJSON)
@@ -58,3 +58,9 @@ instance FromJSON AdminCreation where
   parseJSON (Object admin) =
     AdminCreation <$> admin .: "first_name" <*> admin .: "last_name" <*>
     admin .:! "profile_picture"
+
+data UserDeletion =
+  UserDeletion Int
+
+instance FromJSON UserDeletion where
+  parseJSON (Object user) = UserDeletion <$> user .: "id"

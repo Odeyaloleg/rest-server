@@ -4,8 +4,10 @@ module App
   ( runServer
   ) where
 
-import qualified API
-import qualified API.Entities as API.E
+import qualified API as API
+import qualified API.HasResponse as API.R
+import qualified API.ResponseBuilder as API.B
+import qualified API.Entities.Users as API.Users
 import Data.Bool (bool)
 import qualified Data.ByteString as BS
 import qualified Data.Map.Strict as MS
@@ -15,27 +17,24 @@ import Network.HTTP.Types (status200, status404)
 import qualified Network.Wai as WAI
 import Network.Wai.Handler.Warp (defaultSettings, runSettings, setHost, setPort)
 
-instance API.HasResponse WAI.Response where
+instance API.R.HasResponse WAI.Response where
   getResponse apiData =
     let responseBody =
           case apiData of
-            API.UsersList pageNum ->
-              API.buildResponse $ API.UsersListBuilder users
-            API.CreateUser user ->
-              API.buildResponse $ API.CreateUserBuilder user
-            API.NewsList -> API.buildResponse $ API.NewsBuilder "News list."
-            API.NewsItem _ ->
-              API.buildResponse $ API.NewsItemBuilder "News item."
-            API.BadRequest description ->
-              API.buildResponse $ API.BadRequestBuilder description
+            API.R.UsersList pageNum ->
+              API.B.buildResponse $ API.B.UsersListBuilder users
+            API.R.CreateUser user ->
+              API.B.buildResponse $ API.B.CreateUserBuilder user
+            API.R.BadRequest description ->
+              API.B.buildResponse $ API.B.BadRequestBuilder description
      in WAI.responseLBS
           status404
           [("Content-Type", "application/json")]
           responseBody
 
 users =
-  [ API.E.User 1 "Oleg" "Romashin" Nothing "Yesterday" True
-  , API.E.User 2 "Yaroslav" "Romashin" Nothing "Today" False
+  [ API.Users.User 1 "Oleg" "Romashin" Nothing "Yesterday" True
+  , API.Users.User 2 "Yaroslav" "Romashin" Nothing "Today" False
   ]
 
 runServer :: IO ()
@@ -51,7 +50,7 @@ application request respond = do
     then do
       requestBody <- WAI.strictRequestBody request
       let queryData = API.QueryData (pathInfo !! 0) (WAI.queryString request) requestBody
-      let response = API.runAPI queryData API.AccessAdmin
+      let response = API.runAPI queryData API.R.AccessAdmin
       respond response
     else respond $ WAI.responseLBS status404 [] ""
 
