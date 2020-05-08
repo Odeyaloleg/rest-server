@@ -6,9 +6,11 @@ module API
   ) where
 
 import qualified API.Entities.Users as Users
-import qualified API.Methods.Users as Users.M
-import API.Methods.Generic (badRequest)
+import qualified API.Entities.Tags as Tags
 import qualified API.HasResponse as R
+import API.Methods.Generic (badRequest)
+import qualified API.Methods.Users as Users.M
+import qualified API.Methods.Tags as Tags.M
 import Data.Aeson (decode)
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as BSC
@@ -18,23 +20,56 @@ import Text.Read (readMaybe)
 
 data QueryData =
   QueryData
-    { method :: T.Text
+    { requestMethod :: BS.ByteString
+    , apiMethod :: T.Text
     , params :: [(BS.ByteString, (Maybe BS.ByteString))]
     , body :: BSL.ByteString
     }
 
 runAPI :: (R.HasResponse a) => QueryData -> R.AccessLevel -> a
 runAPI queryData access =
-  case method queryData of
-    "users" ->
-      case lookup "page" (params queryData) of
-        Just pageNum ->
-          maybe
-            (badRequest "Bad path parameters.")
-            Users.M.getUsers
-            (maybe Nothing (readMaybe . BSC.unpack) pageNum)
-        Nothing -> Users.M.getUsers 1
-    "createUser" -> Users.M.createUser 3 (decode (body queryData) :: Maybe Users.UserCreation)
-    "createAdmin" ->
-      Users.M.createAdmin 3 (decode (body queryData) :: Maybe Users.AdminCreation) access
-    _ -> badRequest "Resource path does not exist."
+  case requestMethod queryData of
+    "GET" ->
+      case apiMethod queryData of
+        "users" ->
+          case lookup "page" (params queryData) of
+            Just pageNum ->
+              maybe
+                (badRequest "Bad path parameters.")
+                Users.M.getUsers
+                (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+            Nothing -> Users.M.getUsers 1
+        "tags" ->
+          case lookup "page" (params queryData) of
+            Just pageNum ->
+              maybe
+                (badRequest "Bad path parameters.")
+                Tags.M.getTags
+                (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+            Nothing -> Tags.M.getTags 1
+        _ -> badRequest "Resource path does not exist."
+    "POST" ->
+      case apiMethod queryData of
+        "createUser" ->
+          Users.M.createUser
+            3
+            (decode (body queryData) :: Maybe Users.UserCreation)
+        "createAdmin" ->
+          Users.M.createAdmin
+            3
+            (decode (body queryData) :: Maybe Users.AdminCreation)
+            access
+        "createTag" ->
+          Tags.M.createTag
+            (decode (body queryData) :: Maybe Tags.TagCreation)
+            access
+        "deleteTag" ->
+          Tags.M.deleteTag
+            (decode (body queryData) :: Maybe Tags.TagDeletion)
+            access
+        "editTag" ->
+          Tags.M.editTag
+            (decode (body queryData) :: Maybe Tags.TagEditing)
+            access
+        _ -> badRequest "Resource path does not exist."
+    _ -> badRequest "Bad request method. Use GET or POST."

@@ -10,7 +10,6 @@ import Data.Aeson
   , (.:)
   , (.:!)
   , (.=)
-  , encode
   , object
   )
 

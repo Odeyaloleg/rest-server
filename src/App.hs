@@ -5,9 +5,9 @@ module App
   ) where
 
 import qualified API as API
+import qualified API.Entities.Users as API.Users
 import qualified API.HasResponse as API.R
 import qualified API.ResponseBuilder as API.B
-import qualified API.Entities.Users as API.Users
 import Data.Bool (bool)
 import qualified Data.ByteString as BS
 import qualified Data.Map.Strict as MS
@@ -25,6 +25,8 @@ instance API.R.HasResponse WAI.Response where
               API.B.buildResponse $ API.B.UsersListBuilder users
             API.R.CreateUser user ->
               API.B.buildResponse $ API.B.CreateUserBuilder user
+            API.R.DeleteUser uId ->
+              API.B.buildResponse $ API.B.DeleteUserBuilder
             API.R.BadRequest description ->
               API.B.buildResponse $ API.B.BadRequestBuilder description
      in WAI.responseLBS
@@ -49,7 +51,12 @@ application request respond = do
   if length pathInfo == 1
     then do
       requestBody <- WAI.strictRequestBody request
-      let queryData = API.QueryData (pathInfo !! 0) (WAI.queryString request) requestBody
+      let queryData =
+            API.QueryData
+              (WAI.requestMethod request)
+              (pathInfo !! 0)
+              (WAI.queryString request)
+              requestBody
       let response = API.runAPI queryData API.R.AccessAdmin
       respond response
     else respond $ WAI.responseLBS status404 [] ""

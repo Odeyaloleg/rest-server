@@ -23,7 +23,8 @@ createUser uId userMaybe =
         False
     Nothing -> R.getResponse $ R.BadRequest "Wrong\\insufficient JSON data."
 
-createAdmin :: (R.HasResponse a) => Int -> Maybe E.AdminCreation -> R.AccessLevel -> a
+createAdmin ::
+     (R.HasResponse a) => Int -> Maybe E.AdminCreation -> R.AccessLevel -> a
 createAdmin uId adminMaybe access =
   if access == R.AccessAdmin
     then case adminMaybe of
@@ -37,5 +38,15 @@ createAdmin uId adminMaybe access =
                (E.profilePictureAdmin admin)
                ("Today")
                True
-           Nothing -> R.getResponse $ R.BadRequest "Wrong\\insufficient JSON data."
+           Nothing ->
+             R.getResponse $ R.BadRequest "Wrong\\insufficient JSON data."
+    else R.getResponse $ R.BadRequest "Resource path does not exist."
+
+deleteUser :: (R.HasResponse a) => Maybe E.UserDeletion -> R.AccessLevel -> a
+deleteUser userDeletionMaybe access =
+  if access == R.AccessAdmin
+    then case userDeletionMaybe of
+           Just (E.UserDeletion uId) -> R.getResponse $ R.DeleteUser uId
+           Nothing ->
+             R.getResponse $ R.BadRequest "Wrong\\insufficient JSON data."
     else R.getResponse $ R.BadRequest "Resource path does not exist."
