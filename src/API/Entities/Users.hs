@@ -4,7 +4,6 @@ module API.Entities.Users where
 
 import Data.Aeson
   ( FromJSON(parseJSON)
-  , Object
   , ToJSON(toJSON)
   , Value(Object)
   , (.:)
@@ -19,7 +18,7 @@ data User =
     , firstName :: String
     , lastName :: String
     , profilePicture :: Maybe String
-    , creationDate :: String
+    , creationDate :: Int
     , isAdmin :: Bool
     }
 

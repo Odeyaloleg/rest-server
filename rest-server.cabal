@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6e108a032b64eb22d18d100e35e98037746e407b0dccefe5f6bd292372fba27c
+-- hash: 8d17f435f3f4fabc803a71ea4e8f3bc415b932df1b464df8ac1e83e14ee9f5de
 
 name:           rest-server
 version:        0.1.0.0
@@ -28,6 +28,11 @@ source-repository head
 library
   exposed-modules:
       API
+      API.Entities.Authors
+      API.Entities.Categories
+      API.Entities.Comments
+      API.Entities.Drafts
+      API.Entities.Posts
       API.Entities.Tags
       API.Entities.Users
       API.HasResponse
@@ -36,6 +41,7 @@ library
       API.Methods.Users
       API.ResponseBuilder
       App
+      Types
   other-modules:
       Paths_rest_server
   hs-source-dirs:

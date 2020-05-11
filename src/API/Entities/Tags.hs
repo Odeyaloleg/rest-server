@@ -4,7 +4,6 @@ module API.Entities.Tags where
 
 import Data.Aeson
   ( FromJSON(parseJSON)
-  , Object
   , ToJSON(toJSON)
   , Value(Object)
   , (.:)

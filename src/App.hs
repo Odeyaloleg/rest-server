@@ -23,8 +23,10 @@ instance API.R.HasResponse WAI.Response where
           case apiData of
             API.R.UsersList pageNum ->
               API.B.buildResponse $ API.B.UsersListBuilder users
-            API.R.CreateUser user ->
-              API.B.buildResponse $ API.B.CreateUserBuilder user
+            API.R.CreateUser firstName lastname profilePicture ->
+              API.B.buildResponse $ API.B.CreateUserBuilder $ API.Users.User 3 firstName lastname profilePicture 0 False
+            API.R.CreateAdmin firstName lastname profilePicture ->
+              API.B.buildResponse $ API.B.CreateUserBuilder $ API.Users.User 3 firstName lastname profilePicture 0 True
             API.R.DeleteUser uId ->
               API.B.buildResponse $ API.B.DeleteUserBuilder
             API.R.BadRequest description ->
@@ -35,8 +37,8 @@ instance API.R.HasResponse WAI.Response where
           responseBody
 
 users =
-  [ API.Users.User 1 "Oleg" "Romashin" Nothing "Yesterday" True
-  , API.Users.User 2 "Yaroslav" "Romashin" Nothing "Today" False
+  [ API.Users.User 1 "Oleg" "Romashin" Nothing 0 True
+  , API.Users.User 2 "Yaroslav" "Romashin" Nothing 1 False
   ]
 
 runServer :: IO ()
@@ -57,7 +59,7 @@ application request respond = do
               (pathInfo !! 0)
               (WAI.queryString request)
               requestBody
-      let response = API.runAPI queryData API.R.AccessAdmin
+      let response = API.runAPI queryData (API.R.AccessAdmin 123)
       respond response
     else respond $ WAI.responseLBS status404 [] ""
 

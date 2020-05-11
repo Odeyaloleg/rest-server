@@ -52,11 +52,9 @@ runAPI queryData access =
       case apiMethod queryData of
         "createUser" ->
           Users.M.createUser
-            3
             (decode (body queryData) :: Maybe Users.UserCreation)
         "createAdmin" ->
           Users.M.createAdmin
-            3
             (decode (body queryData) :: Maybe Users.AdminCreation)
             access
         "createTag" ->

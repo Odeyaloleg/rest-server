@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module API.Methods.Generic where
 
 import qualified API.HasResponse as R
