@@ -22,7 +22,7 @@ instance API.R.HasResponse WAI.Response where
     let responseBody =
           case apiData of
             API.R.UsersList pageNum ->
-              API.B.buildResponse $ API.B.UsersListBuilder users
+              API.B.buildResponse $ API.B.UsersListBuilder []
             API.R.CreateUser firstName lastname profilePicture ->
               API.B.buildResponse $ API.B.CreateUserBuilder $ API.Users.User 3 firstName lastname profilePicture 0 False
             API.R.CreateAdmin firstName lastname profilePicture ->
@@ -35,11 +35,6 @@ instance API.R.HasResponse WAI.Response where
           status404
           [("Content-Type", "application/json")]
           responseBody
-
-users =
-  [ API.Users.User 1 "Oleg" "Romashin" Nothing 0 True
-  , API.Users.User 2 "Yaroslav" "Romashin" Nothing 1 False
-  ]
 
 runServer :: IO ()
 runServer = do
