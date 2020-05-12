@@ -13,11 +13,22 @@ import Data.Aeson
   , (.=)
   , object
   )
-import Types (AdditionalPicture, AuthorId, Content, Id, MainPicture, Title, PostId, CategoryId, TagId)
+import Types
+  ( AdditionalPicture
+  , AuthorId
+  , CategoryId
+  , Content
+  , DraftId
+  , Id
+  , MainPicture
+  , PostId
+  , TagId
+  , Title
+  )
 
 data Draft =
   Draft
-    Id
+    DraftId
     PostId
     AuthorId
     (Maybe Category)
@@ -42,6 +53,7 @@ instance ToJSON Draft where
 
 data DraftCreation =
   DraftCreation
+    (Maybe PostId)
     (Maybe CategoryId)
     (Maybe Title)
     (Maybe [TagId])
@@ -51,21 +63,22 @@ data DraftCreation =
 
 instance FromJSON DraftCreation where
   parseJSON (Object draft) =
-    DraftCreation <$> draft .:! "category" <*> draft .:! "title" <*>
+    DraftCreation <$> draft .:! "post_id" <*> draft .:! "category" <*>
+    draft .:! "title" <*>
     draft .:! "tags" <*>
     draft .:! "main_picture" <*>
     draft .:! "content" <*>
     draft .:! "additional_pictures"
 
 data DraftDeletion =
-  DraftDeletion Int
+  DraftDeletion DraftId
 
 instance FromJSON DraftDeletion where
   parseJSON (Object draft) = DraftDeletion <$> draft .: "id"
 
 data DraftEditing =
   DraftEditing
-    Id
+    DraftId
     (Maybe CategoryId)
     (Maybe Title)
     (Maybe [TagId])

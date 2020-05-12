@@ -52,8 +52,8 @@ instance ToJSON Posts where
       , "creation_date" .= creationDate
       ]
 
-data PostCreation =
-  PostCreation
+data PostPublishing =
+  PostPublishing
     CategoryId
     Title
     (Maybe [TagId])
@@ -61,9 +61,9 @@ data PostCreation =
     (Maybe MainPicture)
     (Maybe [AdditionalPicture])
 
-instance FromJSON PostCreation where
+instance FromJSON PostPublishing where
   parseJSON (Object post) =
-    PostCreation <$> post .: "category" <*> post .: "title" <*> post .:! "tags" <*>
+    PostPublishing <$> post .: "category" <*> post .: "title" <*> post .:! "tags" <*>
     post .:! "content" <*>
     post .:! "main_picture" <*>
     post .:! "additional_pictures"
@@ -73,20 +73,3 @@ data PostDeletion =
 
 instance FromJSON PostDeletion where
   parseJSON (Object post) = PostDeletion <$> post .: "id"
-
-data PostEditing =
-  PostEditing
-    PostId
-    (Maybe CategoryId)
-    (Maybe Title)
-    (Maybe [TagId])
-    (Maybe Content)
-    (Maybe MainPicture)
-    (Maybe [AdditionalPicture])
-
-instance FromJSON PostEditing where
-  parseJSON (Object post) =
-    PostEditing <$> post .: "id" <*> post .:! "category" <*> post .:! "title" <*> post .:! "tags" <*>
-    post .:! "content" <*>
-    post .:! "main_picture" <*>
-    post .:! "additional_pictures"

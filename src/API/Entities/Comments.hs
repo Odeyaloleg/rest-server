@@ -10,29 +10,22 @@ import Data.Aeson
   , (.=)
   , object
   )
-import Types (UserId, Id)
+import Types (UserId, CommentId, PostId)
 
 data Comment
-  = Comment Id String
+  = Comment CommentId String
 
 instance ToJSON Comment where
   toJSON (Comment cId comment) = object ["id" .= cId, "comment" .= comment]
 
-data CommentPublish =
-  CommentPublish String
+data CommentPublishing =
+  CommentPublishing PostId String
 
-instance FromJSON CommentPublish where
-  parseJSON (Object comment) = CommentPublish <$> comment .: "comment"
+instance FromJSON CommentPublishing where
+  parseJSON (Object comment) = CommentPublishing <$> comment .: "post_id" <*> comment .: "comment"
 
 data CommentDeletion =
-  CommentDeletion Int
+  CommentDeletion CommentId
 
 instance FromJSON CommentDeletion where
   parseJSON (Object comment) = CommentDeletion <$> comment .: "id"
-
-data CommentEditing =
-  CommentEditing Int String
-
-instance FromJSON CommentEditing where
-  parseJSON (Object comment) =
-    CommentEditing <$> comment .: "id" <*> comment .: "new_comment"

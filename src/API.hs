@@ -7,10 +7,16 @@ module API
 
 import qualified API.Entities.Users as Users
 import qualified API.Entities.Tags as Tags
+import qualified API.Entities.Authors as Authors
+import qualified API.Entities.Categories as Categories
+import qualified API.Entities.Comments as Comments
 import qualified API.HasResponse as R
 import API.Methods.Generic (badRequest)
 import qualified API.Methods.Users as Users.M
 import qualified API.Methods.Tags as Tags.M
+import qualified API.Methods.Authors as Authors.M
+import qualified API.Methods.Categories as Categories.M
+import qualified API.Methods.Comments as Comments.M
 import Data.Aeson (decode)
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as BSC
@@ -47,6 +53,22 @@ runAPI queryData access =
                 Tags.M.getTags
                 (maybe Nothing (readMaybe . BSC.unpack) pageNum)
             Nothing -> Tags.M.getTags 1
+        "authors" ->
+          case lookup "page" (params queryData) of
+            Just pageNum ->
+              maybe
+                (badRequest "Bad path parameters.")
+                (Authors.M.getAuthors access)
+                (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+            Nothing -> Tags.M.getTags 1
+        "categories" ->
+          case lookup "page" (params queryData) of
+            Just pageNum ->
+              maybe
+                (badRequest "Bad path parameters.")
+                Categories.M.getCategories
+                (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+            Nothing -> Tags.M.getTags 1
         _ -> badRequest "Resource path does not exist."
     "POST" ->
       case apiMethod queryData of
@@ -69,5 +91,29 @@ runAPI queryData access =
           Tags.M.editTag
             (decode (body queryData) :: Maybe Tags.TagEditing)
             access
+        "createAuthor" ->
+          Authors.M.createAuthor
+            access
+            (decode (body queryData) :: Maybe Authors.AuthorCreation)
+        "deleteAuthor" ->
+          Authors.M.deleteAuthor
+            access
+            (decode (body queryData) :: Maybe Authors.AuthorDeletion)
+        "editAuthor" ->
+          Authors.M.editAuthor
+            access
+            (decode (body queryData) :: Maybe Authors.AuthorEditing)
+        "createCategory" ->
+          Categories.M.createCategory
+            access
+            (decode (body queryData) :: Maybe Categories.CategoryCreation)
+        "deleteCategory" ->
+          Categories.M.deleteCategory
+            access
+            (decode (body queryData) :: Maybe Categories.CategoryDeletion)
+        "editCategory" ->
+          Categories.M.editCategory
+            access
+            (decode (body queryData) :: Maybe Categories.CategoryEditing)
         _ -> badRequest "Resource path does not exist."
     _ -> badRequest "Bad request method. Use GET or POST."

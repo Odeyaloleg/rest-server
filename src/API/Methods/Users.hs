@@ -2,8 +2,9 @@ module API.Methods.Users where
 
 import qualified API.Entities.Users as E
 import qualified API.HasResponse as R
+import Types (PageNum)
 
-getUsers :: (R.HasResponse a) => Int -> a
+getUsers :: (R.HasResponse a) => PageNum -> a
 getUsers pageNum = R.getResponse $ R.UsersList pageNum
 
 createUser :: (R.HasResponse a) => Maybe E.UserCreation -> a

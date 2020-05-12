@@ -6,6 +6,8 @@ type UserId = Int
 
 type AuthorId = Int
 
+type AdminId = Int
+
 type AuthorDescription = String
 
 type PostId = Int
@@ -15,6 +17,10 @@ type CategoryId = Int
 type SubcategoryId = Int
 
 type TagId = Int
+
+type DraftId = Int
+
+type CommentId = Int
 
 type FirstName = String
 

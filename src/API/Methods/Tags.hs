@@ -2,8 +2,9 @@ module API.Methods.Tags where
 
 import qualified API.Entities.Tags as E
 import qualified API.HasResponse as R
+import Types (PageNum)
 
-getTags :: (R.HasResponse a) => Int -> a
+getTags :: (R.HasResponse a) => PageNum -> a
 getTags pageNum = R.getResponse $ R.TagsList pageNum
 
 createTag :: (R.HasResponse a) => Maybe E.TagCreation -> R.AccessLevel -> a
