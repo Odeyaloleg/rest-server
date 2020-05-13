@@ -7,8 +7,8 @@ import Types (PageNum)
 getPosts :: (R.HasResponse a) => PageNum -> a
 getPosts pageNum = R.getResponse $ R.PostsList pageNum
 
-publishPost :: (R.HasResponse a) => Maybe E.PostPublishing -> R.AccessLevel -> a
-publishPost postMaybe access =
+publishPost :: (R.HasResponse a) => R.AccessLevel -> Maybe E.PostPublishing -> a
+publishPost access postMaybe =
   R.withAuthorAccess
     access
     (case postMaybe of
@@ -23,8 +23,8 @@ publishPost postMaybe access =
            additionalPictures
        Nothing -> R.wrongJSON)
 
-deletePost :: (R.HasResponse a) => Maybe E.PostDeletion -> R.AccessLevel -> a
-deletePost postMaybe access =
+deletePost :: (R.HasResponse a) => R.AccessLevel -> Maybe E.PostDeletion -> a
+deletePost access postMaybe =
   R.withAdminAccess
     access
     (case postMaybe of

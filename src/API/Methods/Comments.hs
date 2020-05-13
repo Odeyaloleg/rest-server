@@ -13,8 +13,8 @@ publishComment commentMaybe =
     Just (E.CommentPublishing postId comment) -> R.getResponse $ R.PublishComment postId comment
     Nothing -> R.wrongJSON
 
-deleteComment :: (R.HasResponse a) => Maybe E.CommentDeletion -> R.AccessLevel -> a
-deleteComment commentMaybe access =
+deleteComment :: (R.HasResponse a) => R.AccessLevel -> Maybe E.CommentDeletion -> a
+deleteComment access commentMaybe =
   R.withAdminAccess
     access
     (case commentMaybe of

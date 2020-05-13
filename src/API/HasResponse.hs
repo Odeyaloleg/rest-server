@@ -30,7 +30,7 @@ data Request
   | CommentsList T.PostId T.PageNum
   | PublishComment T.PostId String
   | DeleteComment T.CommentId
-  | DraftsList T.AuthorId T.PageNum
+  | DraftsList T.PageNum
   | PublishDraft T.DraftId
   | CreateDraft
       (Maybe T.PostId)
