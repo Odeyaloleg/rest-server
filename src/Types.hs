@@ -14,7 +14,7 @@ type PostId = Int
 
 type CategoryId = Int
 
-type SubcategoryId = Int
+type ParentCategoryId = Int
 
 type TagId = Int
 

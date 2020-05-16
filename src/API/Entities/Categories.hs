@@ -11,22 +11,21 @@ import Data.Aeson
   , (.=)
   , object
   )
-import Types (SubcategoryId)
+import Types (CategoryId, ParentCategoryId)
 
 data Category
-  = Subcategory Int Category
-  | Category Int String
+  = ParentCategory CategoryId String [Category]
+  | CategoryBottom CategoryId String
 
 instance ToJSON Category where
-  toJSON (Category cId category) = object ["id" .= cId, "category" .= category]
-  toJSON (Subcategory cId category) =
-    object ["id" .= cId, "category" .= category]
+  toJSON (ParentCategory cId category subcategories) = object ["id" .= cId, "category" .= category, "subcategories" .= subcategories]
+  toJSON (CategoryBottom cId category) = object ["id" .= cId, "category" .= category]
 
 data CategoryCreation =
-  CategoryCreation (Maybe SubcategoryId) String
+  CategoryCreation (Maybe ParentCategoryId) String
 
 instance FromJSON CategoryCreation where
-  parseJSON (Object category) = CategoryCreation <$> category .:! "subcategory"  <*> category .: "category"
+  parseJSON (Object category) = CategoryCreation <$> category .:! "parentcategory_id"  <*> category .: "category"
 
 data CategoryDeletion =
   CategoryDeletion Int
@@ -35,8 +34,8 @@ instance FromJSON CategoryDeletion where
   parseJSON (Object category) = CategoryDeletion <$> category .: "id"
 
 data CategoryEditing =
-  CategoryEditing Int (Maybe SubcategoryId) String
+  CategoryEditing Int (Maybe ParentCategoryId) String
 
 instance FromJSON CategoryEditing where
   parseJSON (Object category) =
-    CategoryEditing <$> category .: "id" <*> category .:! "new_subcategory" <*>category .: "new_category"
+    CategoryEditing <$> category .: "id" <*> category .:! "new_parentcategory_id" <*> category .: "new_category"

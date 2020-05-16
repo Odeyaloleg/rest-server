@@ -10,7 +10,7 @@ import Data.Aeson
   , (.=)
   , object
   )
-import Types (AuthorId, AuthorDescription)
+import Types (AuthorId, AuthorDescription, UserId)
 
 data Author =
   Author AuthorId AuthorDescription
@@ -19,10 +19,10 @@ instance ToJSON Author where
   toJSON (Author authorId description) = object ["id" .= authorId, "description" .= description]
 
 data AuthorCreation =
-  AuthorCreation AuthorDescription
+  AuthorCreation UserId AuthorDescription
 
 instance FromJSON AuthorCreation where
-  parseJSON (Object description) = AuthorCreation <$> description .: "description"
+  parseJSON (Object author) = AuthorCreation <$> author .: "user_id" <*> author .: "description"
 
 data AuthorDeletion =
   AuthorDeletion AuthorId

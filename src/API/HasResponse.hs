@@ -20,13 +20,13 @@ data Request
   | DeleteTag T.TagId
   | EditTag T.TagId String
   | AuthorsList T.PageNum
-  | CreateAuthor T.AuthorDescription
+  | CreateAuthor T.UserId T.AuthorDescription
   | DeleteAuthor T.AuthorId
   | EditAuthor T.AuthorId T.AuthorDescription
   | CategoriesList T.PageNum
-  | CreateCategory (Maybe T.SubcategoryId) String
+  | CreateCategory (Maybe T.ParentCategoryId) String
   | DeleteCategory T.CategoryId
-  | EditCategory T.CategoryId (Maybe T.SubcategoryId) String
+  | EditCategory T.CategoryId (Maybe T.ParentCategoryId) String
   | CommentsList T.PostId T.PageNum
   | PublishComment T.PostId String
   | DeleteComment T.CommentId

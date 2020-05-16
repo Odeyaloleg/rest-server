@@ -15,9 +15,9 @@ createAuthor access authorMaybe =
   R.withAdminAccess
     access
     (case authorMaybe of
-       Just (E.AuthorCreation description) ->
+       Just (E.AuthorCreation userId description) ->
          R.getResponse $
-         R.CreateAuthor description
+         R.CreateAuthor userId description
        Nothing -> R.wrongJSON)
 
 deleteAuthor :: (R.HasResponse a) => R.AccessLevel -> Maybe E.AuthorDeletion -> a
