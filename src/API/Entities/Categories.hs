@@ -11,7 +11,7 @@ import Data.Aeson
   , (.=)
   , object
   )
-import Types (CategoryId, ParentCategoryId)
+import Models.Category (CategoryId, ParentCategoryId)
 
 data Category
   = ParentCategory CategoryId String [Category]

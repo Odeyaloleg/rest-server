@@ -2,9 +2,8 @@ module API.Methods.Authors where
 
 import qualified API.Entities.Authors as E
 import qualified API.HasResponse as R
-import Types (PageNum)
 
-getAuthors :: (R.HasResponse a) => R.AccessLevel -> PageNum -> a
+getAuthors :: (R.HasResponse a) => R.AccessLevel -> R.PageNum -> a
 getAuthors access pageNum =
   R.withAdminAccess
     access

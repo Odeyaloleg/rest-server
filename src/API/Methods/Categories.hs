@@ -2,9 +2,8 @@ module API.Methods.Categories where
 
 import qualified API.Entities.Categories as E
 import qualified API.HasResponse as R
-import Types (PageNum)
 
-getCategories :: (R.HasResponse a) => PageNum -> a
+getCategories :: (R.HasResponse a) => R.PageNum -> a
 getCategories pageNum = R.getResponse $ R.CategoriesList pageNum
 
 createCategory :: (R.HasResponse a) => R.AccessLevel -> Maybe E.CategoryCreation -> a

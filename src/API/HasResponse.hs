@@ -2,62 +2,70 @@ module API.HasResponse where
 
 import qualified API.Entities.Tags as Tags
 import qualified API.Entities.Users as Users
-import qualified Types as T
+import Models.User (UserId, FirstName, LastName, ProfilePicture)
+import Models.Tag (TagId)
+import Models.Author (AuthorDescription)
+import Models.Category (CategoryId, ParentCategoryId)
+import Models.Post (PostId, Title, MainPicture, Content, AdditionalPicture)
+import Models.Comment (CommentId)
+import Models.Draft (DraftId)
+
+type PageNum = Int
 
 data AccessLevel
-  = AccessUser T.UserId
-  | AccessAuthor T.AuthorId
-  | AccessAdmin T.AdminId
+  = AccessUser UserId
+  | AccessAuthor UserId
+  | AccessAdmin UserId
   deriving (Eq)
 
 data Request
-  = UsersList T.PageNum
-  | CreateUser T.FirstName T.LastName T.ProfilePicture
-  | CreateAdmin T.FirstName T.LastName T.ProfilePicture
-  | DeleteUser T.UserId
-  | TagsList T.PageNum
+  = UsersList PageNum
+  | CreateUser FirstName LastName ProfilePicture
+  | CreateAdmin FirstName LastName ProfilePicture
+  | DeleteUser UserId
+  | TagsList PageNum
   | CreateTag String
-  | DeleteTag T.TagId
-  | EditTag T.TagId String
-  | AuthorsList T.PageNum
-  | CreateAuthor T.UserId T.AuthorDescription
-  | DeleteAuthor T.AuthorId
-  | EditAuthor T.AuthorId T.AuthorDescription
-  | CategoriesList T.PageNum
-  | CreateCategory (Maybe T.ParentCategoryId) String
-  | DeleteCategory T.CategoryId
-  | EditCategory T.CategoryId (Maybe T.ParentCategoryId) String
-  | CommentsList T.PostId T.PageNum
-  | PublishComment T.PostId String
-  | DeleteComment T.CommentId
-  | DraftsList T.PageNum
-  | PublishDraft T.DraftId
+  | DeleteTag TagId
+  | EditTag TagId String
+  | AuthorsList PageNum
+  | CreateAuthor UserId AuthorDescription
+  | DeleteAuthor UserId
+  | EditAuthor UserId AuthorDescription
+  | CategoriesList PageNum
+  | CreateCategory (Maybe ParentCategoryId) String
+  | DeleteCategory CategoryId
+  | EditCategory CategoryId (Maybe ParentCategoryId) String
+  | CommentsList PostId PageNum
+  | PublishComment PostId String
+  | DeleteComment CommentId
+  | DraftsList PageNum
+  | PublishDraft DraftId
   | CreateDraft
-      (Maybe T.PostId)
-      (Maybe T.CategoryId)
-      (Maybe T.Title)
-      (Maybe [T.TagId])
-      (Maybe T.MainPicture)
-      (Maybe T.Content)
-      (Maybe [T.AdditionalPicture])
-  | DeleteDraft T.DraftId
+      (Maybe PostId)
+      (Maybe CategoryId)
+      (Maybe Title)
+      (Maybe [TagId])
+      (Maybe MainPicture)
+      (Maybe Content)
+      (Maybe [AdditionalPicture])
+  | DeleteDraft DraftId
   | EditDraft
-      T.DraftId
-      (Maybe T.CategoryId)
-      (Maybe T.Title)
-      (Maybe [T.TagId])
-      (Maybe T.MainPicture)
-      (Maybe T.Content)
-      (Maybe [T.AdditionalPicture])
-  | PostsList T.PageNum
+      DraftId
+      (Maybe CategoryId)
+      (Maybe Title)
+      (Maybe [TagId])
+      (Maybe MainPicture)
+      (Maybe Content)
+      (Maybe [AdditionalPicture])
+  | PostsList PageNum
   | PublishPost
-      T.CategoryId
-      T.Title
-      (Maybe [T.TagId])
-      (Maybe T.Content)
-      (Maybe T.MainPicture)
-      (Maybe [T.AdditionalPicture])
-  | DeletePost T.PostId
+      CategoryId
+      Title
+      (Maybe [TagId])
+      (Maybe Content)
+      (Maybe MainPicture)
+      (Maybe [AdditionalPicture])
+  | DeletePost PostId
   | BadRequest String
 
 class HasResponse a where

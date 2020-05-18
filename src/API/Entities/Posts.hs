@@ -15,16 +15,10 @@ import Data.Aeson
 import API.Entities.Authors (Author)
 import API.Entities.Categories (Category)
 import API.Entities.Tags (Tag)
-import Types
-  ( AdditionalPicture
-  , CategoryId
-  , Content
-  , MainPicture
-  , PostId
-  , Title
-  , CreationDate
-  , TagId
-  )
+import Models.Post (AdditionalPicture, Content, MainPicture, PostId, Title)
+import Models.User (CreationDate)
+import Models.Category (CategoryId)
+import Models.Tag (TagId)
 
 data Posts =
   Post
