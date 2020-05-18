@@ -8,19 +8,19 @@ module API
 import qualified API.Entities.Authors as Authors
 import qualified API.Entities.Categories as Categories
 import qualified API.Entities.Comments as Comments
-import qualified API.Entities.Tags as Tags
-import qualified API.Entities.Users as Users
 import qualified API.Entities.Drafts as Drafts
 import qualified API.Entities.Posts as Posts
+import qualified API.Entities.Tags as Tags
+import qualified API.Entities.Users as Users
 import qualified API.HasResponse as R
 import qualified API.Methods.Authors as Authors.M
 import qualified API.Methods.Categories as Categories.M
 import qualified API.Methods.Comments as Comments.M
+import qualified API.Methods.Drafts as Drafts.M
+import API.Methods.Generic (badRequest)
+import qualified API.Methods.Posts as Posts.M
 import qualified API.Methods.Tags as Tags.M
 import qualified API.Methods.Users as Users.M
-import qualified API.Methods.Drafts as Drafts.M
-import qualified API.Methods.Posts as Posts.M
-import API.Methods.Generic (badRequest)
 import Data.Aeson (decode)
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as BSC
@@ -44,65 +44,52 @@ runAPI queryData access =
         "users" ->
           case lookup "page" (params queryData) of
             Just pageNum ->
-              maybe
-                (badRequest "Bad path parameters.")
-                Users.M.getUsers
-                (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+              runWithParam (Users.M.getUsers) (readIntParam pageNum)
             Nothing -> Users.M.getUsers 1
         "tags" ->
           case lookup "page" (params queryData) of
-            Just pageNum ->
-              maybe
-                (badRequest "Bad path parameters.")
-                Tags.M.getTags
-                (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+            Just pageNum -> runWithParam Tags.M.getTags (readIntParam pageNum)
             Nothing -> Tags.M.getTags 1
         "authors" ->
           case lookup "page" (params queryData) of
             Just pageNum ->
-              maybe
-                (badRequest "Bad path parameters.")
+              runWithParam
                 (Authors.M.getAuthors access)
-                (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+                (readIntParam pageNum)
             Nothing -> Authors.M.getAuthors access 1
         "categories" ->
           case lookup "page" (params queryData) of
             Just pageNum ->
-              maybe
-                (badRequest "Bad path parameters.")
+              runWithParam
                 Categories.M.getCategories
-                (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+                (readIntParam pageNum)
             Nothing -> Categories.M.getCategories 1
         "comments" ->
           case lookup "post" (params queryData) of
             Just post ->
-              maybe
-                (badRequest "Bad path parameters.")
+              runWithParam
                 (\postId ->
                    case lookup "page" (params queryData) of
                      Just pageNum ->
-                       maybe
-                         (badRequest "Bad path parameters.")
+                       runWithParam
                          (Comments.M.getComments postId)
-                         (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+                         (readIntParam pageNum)
                      Nothing -> Comments.M.getComments postId 1)
-                (maybe Nothing (readMaybe . BSC.unpack) post)
+                (readIntParam post)
             Nothing -> badRequest "Bad path parameters."
         "drafts" ->
           case lookup "page" (params queryData) of
             Just pageNum ->
-              maybe
-                (badRequest "Bad path parameters.")
+              runWithParam
                 (Drafts.M.getDrafts access)
-                (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+                (readIntParam pageNum)
             Nothing -> Drafts.M.getDrafts access 1
         "posts" ->
           case lookup "page" (params queryData) of
             Just pageNum ->
-              maybe
-                (badRequest "Bad path parameters.")
+              runWithParam
                 Posts.M.getPosts
-                (maybe Nothing (readMaybe . BSC.unpack) pageNum)
+                (readIntParam pageNum)
             Nothing -> Posts.M.getPosts 1
         _ -> badRequest "Resource path does not exist."
     "POST" ->
@@ -179,3 +166,10 @@ runAPI queryData access =
             (decode (body queryData) :: Maybe Posts.PostDeletion)
         _ -> badRequest "Resource path does not exist."
     _ -> badRequest "Bad request method. Use GET or POST."
+
+readIntParam :: Maybe BS.ByteString -> Maybe Int
+readIntParam param = maybe Nothing (readMaybe . BSC.unpack) param
+
+runWithParam :: (R.HasResponse b) => (a -> b) -> Maybe a -> b
+runWithParam f maybeParam =
+  maybe (badRequest "Bad path parameters.") f maybeParam
