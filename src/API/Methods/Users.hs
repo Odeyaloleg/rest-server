@@ -2,20 +2,16 @@ module API.Methods.Users where
 
 import qualified API.Entities.Users as E
 import qualified API.HasResponse as R
-import Types (PageNum)
 
-getUsers :: (R.HasResponse a) => PageNum -> a
+getUsers :: (R.HasResponse a) => R.PageNum -> a
 getUsers pageNum = R.getResponse $ R.UsersList pageNum
 
 createUser :: (R.HasResponse a) => Maybe E.UserCreation -> a
 createUser userMaybe =
   case userMaybe of
-    Just user ->
+    Just (E.UserCreation firstName lastName profilePicture) ->
       R.getResponse $
-      R.CreateUser
-        (E.firstNameUser user)
-        (E.lastNameUser user)
-        (E.profilePictureUser user)
+      R.CreateUser firstName lastName profilePicture
     Nothing -> R.wrongJSON
 
 createAdmin :: (R.HasResponse a) => Maybe E.AdminCreation -> R.AccessLevel -> a
@@ -23,12 +19,9 @@ createAdmin adminMaybe access =
   R.withAdminAccess
     access
     (case adminMaybe of
-       Just admin ->
+       Just (E.AdminCreation firstName lastName profilePicture) ->
          R.getResponse $
-         R.CreateAdmin
-           (E.firstNameAdmin admin)
-           (E.lastNameAdmin admin)
-           (E.profilePictureAdmin admin)
+         R.CreateAdmin firstName lastName profilePicture
        Nothing -> R.wrongJSON)
 
 deleteUser :: (R.HasResponse a) => Maybe E.UserDeletion -> R.AccessLevel -> a

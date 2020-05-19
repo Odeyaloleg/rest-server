@@ -1,4 +1,5 @@
 .stack-work/
 *~
+rest-server.cabal
 .vscode/
 .history/

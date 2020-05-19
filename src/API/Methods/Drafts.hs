@@ -2,9 +2,10 @@ module API.Methods.Drafts where
 
 import qualified API.Entities.Drafts as E
 import qualified API.HasResponse as R
-import Types (AuthorId, PageNum, DraftId)
+import Models.Draft (DraftId)
+import Models.Post (AuthorId)
 
-getDrafts :: (R.HasResponse a) => R.AccessLevel -> PageNum -> a
+getDrafts :: (R.HasResponse a) => R.AccessLevel -> R.PageNum -> a
 getDrafts access pageNum =
   R.withAuthorAccess
     access

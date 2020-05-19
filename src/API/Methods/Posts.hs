@@ -2,9 +2,8 @@ module API.Methods.Posts where
 
 import qualified API.Entities.Posts as E
 import qualified API.HasResponse as R
-import Types (PageNum)
 
-getPosts :: (R.HasResponse a) => PageNum -> a
+getPosts :: (R.HasResponse a) => R.PageNum -> a
 getPosts pageNum = R.getResponse $ R.PostsList pageNum
 
 publishPost :: (R.HasResponse a) => R.AccessLevel -> Maybe E.PostPublishing -> a

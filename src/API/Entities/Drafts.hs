@@ -13,18 +13,10 @@ import Data.Aeson
   , (.=)
   , object
   )
-import Types
-  ( AdditionalPicture
-  , AuthorId
-  , CategoryId
-  , Content
-  , DraftId
-  , Id
-  , MainPicture
-  , PostId
-  , TagId
-  , Title
-  )
+import Models.Post (AuthorId, AdditionalPicture, Content, MainPicture, PostId, Title)
+import Models.Category (CategoryId)
+import Models.Tag (TagId)
+import Models.Draft (DraftId)
 
 data Draft =
   Draft

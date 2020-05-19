@@ -10,7 +10,9 @@ import Data.Aeson
   , (.=)
   , object
   )
-import Types (UserId, CommentId, PostId)
+import Models.User (UserId)
+import Models.Comment (CommentId)
+import Models.Post (PostId)
 
 data Comment
   = Comment CommentId String

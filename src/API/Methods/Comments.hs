@@ -2,9 +2,9 @@ module API.Methods.Comments where
 
 import qualified API.Entities.Comments as E
 import qualified API.HasResponse as R
-import Types (PostId, PageNum)
+import Models.Post (PostId)
 
-getComments :: (R.HasResponse a) => PostId -> PageNum -> a
+getComments :: (R.HasResponse a) => PostId -> R.PageNum -> a
 getComments postId pageNum = R.getResponse $ R.CommentsList postId pageNum
 
 publishComment :: (R.HasResponse a) => Maybe E.CommentPublishing -> a

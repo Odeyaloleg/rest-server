@@ -10,9 +10,10 @@ import Data.Aeson
   , (.=)
   , object
   )
+import Models.Tag (TagId)
 
 data Tag =
-  Tag Int String
+  Tag TagId String
 
 instance ToJSON Tag where
   toJSON (Tag tagId tag) = object ["id" .= tagId, "tag" .= tag]
@@ -24,13 +25,13 @@ instance FromJSON TagCreation where
   parseJSON (Object tag) = TagCreation <$> tag .: "tag"
 
 data TagDeletion =
-  TagDeletion Int
+  TagDeletion TagId
 
 instance FromJSON TagDeletion where
   parseJSON (Object tag) = TagDeletion <$> tag .: "id"
 
 data TagEditing =
-  TagEditing Int String
+  TagEditing TagId String
 
 instance FromJSON TagEditing where
   parseJSON (Object tag) = TagEditing <$> tag .: "id" <*> tag .: "new_tag"

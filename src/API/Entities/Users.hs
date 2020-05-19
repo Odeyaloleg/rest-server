@@ -11,34 +11,24 @@ import Data.Aeson
   , (.=)
   , object
   )
+import Models.User (UserId, FirstName, LastName, ProfilePicture, CreationDate, IsAdmin)
 
 data User =
-  User
-    { uId :: Int
-    , firstName :: String
-    , lastName :: String
-    , profilePicture :: Maybe String
-    , creationDate :: Int
-    , isAdmin :: Bool
-    }
+  User UserId FirstName LastName ProfilePicture CreationDate IsAdmin
 
 instance ToJSON User where
-  toJSON user =
+  toJSON (User uId firstName lastName profilePicture creationDate isAdmin) =
     object
-      [ "id" .= uId user
-      , "first_name" .= firstName user
-      , "last_name" .= lastName user
-      , "profile_picture" .= profilePicture user
-      , "creation_date" .= creationDate user
-      , "is_admin" .= isAdmin user
+      [ "id" .= uId
+      , "first_name" .= firstName
+      , "last_name" .= lastName
+      , "profile_picture" .= profilePicture
+      , "creation_date" .= creationDate
+      , "is_admin" .= isAdmin
       ]
 
 data UserCreation =
-  UserCreation
-    { firstNameUser :: String
-    , lastNameUser :: String
-    , profilePictureUser :: Maybe String
-    }
+  UserCreation FirstName LastName ProfilePicture
 
 instance FromJSON UserCreation where
   parseJSON (Object user) =
@@ -46,11 +36,7 @@ instance FromJSON UserCreation where
     user .:! "profile_picture"
 
 data AdminCreation =
-  AdminCreation
-    { firstNameAdmin :: String
-    , lastNameAdmin :: String
-    , profilePictureAdmin :: Maybe String
-    }
+  AdminCreation FirstName LastName ProfilePicture
 
 instance FromJSON AdminCreation where
   parseJSON (Object admin) =
@@ -58,7 +44,7 @@ instance FromJSON AdminCreation where
     admin .:! "profile_picture"
 
 data UserDeletion =
-  UserDeletion Int
+  UserDeletion UserId
 
 instance FromJSON UserDeletion where
   parseJSON (Object user) = UserDeletion <$> user .: "id"
