@@ -123,7 +123,7 @@ application request respond = do
               (pathInfo !! 0)
               (WAI.queryString request)
               requestBody
-      let response = API.runAPI queryData (API.R.AccessAdmin 123)
+      let response = API.runAPI (API.R.AccessAdmin 123) queryData
       respond response
     else respond $ WAI.responseLBS status404 [] ""
 

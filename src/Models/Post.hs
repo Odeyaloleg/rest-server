@@ -13,5 +13,3 @@ type Content = String
 type MainPicture = String
 
 type AdditionalPicture = String
-
-
